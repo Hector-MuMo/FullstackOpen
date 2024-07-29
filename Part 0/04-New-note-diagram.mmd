@@ -1,0 +1,17 @@
+sequenceDiagram
+    participant Browser
+    participant Server
+
+    Browser->>Server: POST: Button on the form is clicked, the browser will send the user input to the server.
+    activate Server
+    Server-->>Browser: HTTP: status code 302.
+    deactivate Server
+
+    Browser->>Server: GET: style sheet (main.css).
+    activate Server
+    Browser->>Server: GET: JavaScript code (main.js).
+    Browser->>Server: GET: Raw data of the notes (data.json).
+    Server->>Browser:  HTTP: respond with files
+    deactivate Server
+
+    Note right of Browser: The browser executes the callback function that renders the notes

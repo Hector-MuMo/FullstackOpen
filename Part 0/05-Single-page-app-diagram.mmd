@@ -1,0 +1,11 @@
+sequenceDiagram
+    participant Browser
+    participant Server
+
+    Note left of Server: The Content-Type header of the request tells the server that the included data is represented in JSON format.
+    Browser->>Server: POST: request to the address new_note_spa with JSON data.
+
+    Note left of Server: Event handler creates a new note, adds it to the notes list.
+    Server-->>Browser:  HTTP: responds with status code 201 created.
+    
+    Note right of Browser:  The browser stays on the same page, shows the update and it sends no further HTTP requests.

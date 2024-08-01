@@ -9,7 +9,7 @@ const App = () => {
     const [bad, setBad] = useState(0);
     const [all, setAll] = useState(0);
     const [average, setAverage] = useState(0);
-    const [positive, setPositive] = useState(100);
+    const [positive, setPositive] = useState(0);
 
     const handleGood = () => {
         const increment = good + 1;
@@ -57,7 +57,12 @@ const App = () => {
             <Button text='Good' onClick={handleGood} />
             <Button text='Neutral' onClick={handleNeutral} />
             <Button text='Bad' onClick={handleBad} />
-            <Statistics good={good} neutral={neutral} bad={bad} total={all} avg={average} positive={positive} />
+            {
+                good === 0 && neutral === 0 && bad === 0
+                    ? <p>No feedback given</p>
+                    :
+                    <Statistics good={good} neutral={neutral} bad={bad} total={all} avg={average} positive={positive} />
+            }
         </div>
     )
 }

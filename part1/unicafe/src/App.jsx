@@ -13,9 +13,9 @@ const App = () => {
 
     const handleGood = () => {
         const increment = good + 1;
-        const total = all + 1
-        const avg = (increment - bad) / total
-        const pos = (increment / total) * 100
+        const total = all + 1;
+        const avg = (increment - bad) / total;
+        const pos = (increment / total) * 100;
 
         setGood(increment);
         setAll(total);
@@ -26,10 +26,9 @@ const App = () => {
 
     const handleNeutral = () => {
         const increment = neutral + 1;
-        const total = all + 1
-        const avg = (good - bad) / total
-        const pos = (good / total) * 100
-        console.log(pos);
+        const total = all + 1;
+        const avg = (good - bad) / total;
+        const pos = (good / total) * 100;
 
         setNeutral(increment);
         setAll(total);
@@ -40,10 +39,9 @@ const App = () => {
 
     const handleBad = () => {
         const increment = bad + 1;
-        const total = all + 1
-        const avg = (good - increment) / total
-        const pos = (good / total) * 100
-        console.log(pos);
+        const total = all + 1;
+        const avg = (good - increment) / total;
+        const pos = (good / total) * 100;
 
         setBad(increment);
         setAll(total);

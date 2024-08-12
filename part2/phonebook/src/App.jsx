@@ -3,7 +3,7 @@ import { useState } from 'react'
 const Person = ({ info }) => {
     return (
         <>
-            <p>{info.name}</p>
+            <p>{info.name} {info.number}</p>
         </>
     )
 }

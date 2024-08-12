@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 import Note from './components/Note';
 
-const App = ({ mainNotes }) => {
-    const [notes, setNotes] = useState(mainNotes);
+const App = () => {
+    const [notes, setNotes] = useState([]);
     const [newNote, setNewNote] = useState(
         'a new note...'
     );
@@ -29,7 +30,15 @@ const App = ({ mainNotes }) => {
         setNewNote('')
     }
 
-
+    useEffect(() => {
+        console.log('effect')
+        axios
+            .get('http://localhost:3001/notes')
+            .then(response => {
+                console.log('promise fulfilled')
+                setNotes(response.data)
+            })
+    }, [])
 
 
     return (

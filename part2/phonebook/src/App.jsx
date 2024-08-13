@@ -2,15 +2,9 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import PersonsList from './components/PersonsList';
-import axios from 'axios';
+import personsService from './services/personsRequests'
+import Person from './components/Person';
 
-const Person = ({ info }) => {
-    return (
-        <>
-            <p>{info.name} {info.number}</p>
-        </>
-    )
-}
 
 const App = () => {
     const [persons, setPersons] = useState([]);
@@ -40,32 +34,60 @@ const App = () => {
     const handleSubmitPerson = (e) => {
         e.preventDefault();
 
-        if (newName.length !== 0) {
-            const isInclude = persons.find(item => item.name === newName);
-            if (isInclude) {
-                alert(`${newName} is already added to phonebook`);
-            } else {
-                setPersons([...persons, { name: newName, number: newNumber }]);
-                setNewName('');
-                setNewNumber('');
+        if (newName.length !== 0 & newNumber.length !== 0) {
+            const isNameIncluded = persons.find(item => item.name === newName);
+            const isNumberIncluded = persons.find(item => item.number === newNumber);
+            const newPerson = {
+                name: newName,
+                number: newNumber
             }
+
+            if (isNameIncluded !== undefined | isNumberIncluded !== undefined) {
+                const confirmUpdate = window.confirm(`${newName} or ${newNumber} is already added to phonebook, replace the info?`);
+                const personId = isNameIncluded?.id ?? isNumberIncluded?.id
+
+                if (confirmUpdate) {
+                    personsService.update(personId, newPerson).then(personUpdated => {
+                        setPersons(persons.map(person => person.id === personUpdated.id ? personUpdated : person));
+                    })
+                }
+
+            } else {
+
+                personsService.create(newPerson).then(personCreated => {
+                    setPersons([...persons, personCreated]);
+                    setNewName('');
+                    setNewNumber('');
+                })
+
+            }
+
         } else {
-            alert('Please enter a name');
+            alert('Name or Number is missing');
+        }
+    }
+
+    const handleDeletePerson = (id, name) => {
+        const confirmDelete = window.confirm(`Delete ${name}?`);
+
+        if (confirmDelete) {
+            personsService.erase(id).then(personDeleted => {
+                setPersons(persons.filter(person => person.id !== personDeleted.id))
+            })
         }
     }
 
     useEffect(() => {
-        axios.get('http://localhost:3001/persons').
-            then(response => {
-                setPersons(response.data);
-            }
-            )
+        personsService.getAll().then(initialPersons => {
+            setPersons(initialPersons);
+        });
+
     }, [])
 
 
     const personsList = filter === ''
-        ? persons.map((item, index) => <Person key={index + 'a'} info={item} />)
-        : personsFiltered.map((item, index) => <Person key={index + 'a'} info={item} />)
+        ? persons.map((item, index) => <Person key={index} person={item} onClick={handleDeletePerson} />)
+        : personsFiltered.map((item, index) => <Person key={index} info={item} />)
 
     return (
         <div>

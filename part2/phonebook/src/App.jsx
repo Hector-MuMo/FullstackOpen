@@ -4,6 +4,7 @@ import PersonForm from './components/PersonForm';
 import PersonsList from './components/PersonsList';
 import personsService from './services/personsRequests'
 import Person from './components/Person';
+import Notification from './components/Notification';
 
 
 const App = () => {
@@ -12,6 +13,9 @@ const App = () => {
     const [newNumber, setNewNumber] = useState('');
     const [filter, setFilter] = useState('');
     const [personsFiltered, setPersonsFiltered] = useState([]);
+    const [notificationMessage, setNotificationMessage] = useState('');
+    const [showNotification, setShowNotification] = useState(false);
+    const [isSucceed, setIsSuceed] = useState('success');
 
     const handleChangeName = (e) => {
         setNewName(e.target.value);
@@ -47,19 +51,44 @@ const App = () => {
                 const personId = isNameIncluded?.id ?? isNumberIncluded?.id
 
                 if (confirmUpdate) {
-                    personsService.update(personId, newPerson).then(personUpdated => {
-                        setPersons(persons.map(person => person.id === personUpdated.id ? personUpdated : person));
-                    })
+                    personsService.update(personId, newPerson).
+                        then(personUpdated => {
+                            setPersons(persons.map(person => person.id === personUpdated.id ? personUpdated : person));
+                            setIsSuceed('success');
+                            setNotificationMessage(`Updated ${personUpdated.name}`);
+                            setNewName('');
+                            setNewNumber('');
+                            setShowNotification(true);
+                        }).
+                        catch(error => {
+                            console.log(error);
+                            setIsSuceed('error');
+                        }).finally(
+                            setTimeout(() => {
+                                setShowNotification(false);
+                            }, 5000)
+                        )
                 }
 
             } else {
 
-                personsService.create(newPerson).then(personCreated => {
-                    setPersons([...persons, personCreated]);
-                    setNewName('');
-                    setNewNumber('');
-                })
-
+                personsService.create(newPerson).
+                    then(personCreated => {
+                        setPersons([...persons, personCreated]);
+                        setIsSuceed('success');
+                        setNotificationMessage(`Added ${personCreated.name}`);
+                        setNewName('');
+                        setNewNumber('');
+                        setShowNotification(true);
+                    }).
+                    catch(error => {
+                        console.log(error);
+                        setIsSuceed('error');
+                    }).finally(
+                        setTimeout(() => {
+                            setShowNotification(false);
+                        }, 5000)
+                    )
             }
 
         } else {
@@ -71,9 +100,24 @@ const App = () => {
         const confirmDelete = window.confirm(`Delete ${name}?`);
 
         if (confirmDelete) {
-            personsService.erase(id).then(personDeleted => {
-                setPersons(persons.filter(person => person.id !== personDeleted.id))
-            })
+            personsService.erase(id).
+                then(personDeleted => {
+                    setPersons(persons.filter(person => person.id !== personDeleted.id));
+                    setIsSuceed('success');
+                    setNotificationMessage(`Deleted ${personDeleted.name}`);
+                    setShowNotification(true);
+                }).
+                catch(error => {
+                    console.log(error);
+                    setIsSuceed('error');
+                    setNotificationMessage(`${name} info has already deleted from the server.`);
+                    setShowNotification(true);
+                })
+                .finally(
+                    setTimeout(() => {
+                        setShowNotification(false);
+                    }, 5000)
+                )
         }
     }
 
@@ -94,6 +138,9 @@ const App = () => {
             <h2>Phonebook</h2>
             <Filter filter={filter} onChange={handleFilterList} />
             <h2>Add new</h2>
+            {showNotification &&
+                <Notification message={notificationMessage} isSucceed={isSucceed} />
+            }
             <PersonForm
                 name={newName} number={newNumber}
                 onChangeName={handleChangeName} onChangeNumber={handleChangeNumber}

@@ -1,0 +1,12 @@
+{
+    "name": "notes-backend",
+    "version": "1.0.0",
+    "description": "notes backend server",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "hector_mm",
+    "license": "ISC"
+}

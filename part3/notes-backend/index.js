@@ -1,8 +1,10 @@
 const express = require('express');
+const cors = require('cors');
 
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 
 let notes = [
     {
@@ -29,6 +31,10 @@ const generateId = () => {
     return String(maxId + 1)
 }
 
+//Middleware
+const unknownEndpoint = (request, response) => {
+    response.status(404).send({ error: 'unknown endpoint' })
+}
 
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>');
@@ -49,6 +55,7 @@ app.get('/api/notes/:id', (request, response) => {
         response.status(404).end();
     }
 })
+
 app.post('/api/notes', (request, response) => {
     const body = request.body
 
@@ -76,7 +83,9 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).end();
 })
 
-const PORT = 3001
+app.use(unknownEndpoint);
+
+const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`);
 })

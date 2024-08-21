@@ -29,6 +29,7 @@ const App = () => {
         const regEx = new RegExp(e.target.value, 'i');
 
         const filteredList = persons.filter(person => regEx.test(person.name));
+        console.log(filteredList);
 
         setPersonsFiltered(filteredList);
         setFilter(e.target.value);
@@ -131,7 +132,7 @@ const App = () => {
 
     const personsList = filter === ''
         ? persons.map((item, index) => <Person key={index} person={item} onClick={handleDeletePerson} />)
-        : personsFiltered.map((item, index) => <Person key={index} info={item} />)
+        : personsFiltered.map((item, index) => <Person key={index} person={item} onClick={handleDeletePerson} />)
 
     return (
         <div>

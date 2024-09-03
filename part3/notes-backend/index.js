@@ -32,11 +32,15 @@ const generateId = () => {
     return String(maxId + 1)
 }
 
+//MongoDB connection
+
+
 //Middleware
 const unknownEndpoint = (request, response) => {
     response.status(404).send({ error: 'unknown endpoint' })
 }
 
+//APIs
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>');
 })
